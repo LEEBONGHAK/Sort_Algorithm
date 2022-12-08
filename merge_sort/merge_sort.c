@@ -63,6 +63,8 @@ int main()
 		printf("%d ", arr[i]);
 	printf("\n");
 
+	free(tmp);
+
 	return 0;
 
 }
