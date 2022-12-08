@@ -1,60 +1,68 @@
 ﻿
-#include <string.h>     // memset()
+#include <string.h>
 #include <stdio.h>
-#include <stdlib.h>     // malloc()
+#include <stdlib.h>
 
-int get_max(int array[], int length)
+// 배열 중 가장 큰 값을 찾는 함수
+int get_max(int *arr, int size)
 {
-    int max_val = array[0];
+    int max_val = arr[0];
 
-    for (int i = 0; i < length; i++)
-        if (max_val < array[i])
-            max_val = array[i];
+    for (int i = 0; i < size; i++)
+        if (max_val < arr[i])
+            max_val = arr[i];
 
     return max_val;
 }
 
-int main()
+void    counting_sort(int *arr, int size)
 {
-    int max_val;
-    int* tmp_arr;
-    int before_sort[6] = { 1, 0, 3, 1, 3, 1 };
-    int after_sort[6] = { 0, };
+    int i;
+    int max_val = get_max(arr, size);
+    int *tmp_arr;
+    int *sorted_arr;
     
-    max_val = get_max(before_sort, 6);
     tmp_arr = (int*)malloc(sizeof(int) * (max_val + 1));
     memset(tmp_arr, 0, sizeof(int) * (max_val + 1));
 
-    // 각 원소 갯수 계산
-    for (int i = 0; i < 6; i++)
-        tmp_arr[before_sort[i]]++;
+    sorted_arr = (int *)malloc(sizeof(int) * size);
+    memset(sorted_arr, 0, sizeof(int) * size);
 
-    printf("Element Count: ");
-    for (int i = 0; i < max_val + 1; i++)
-        printf("%d ", tmp_arr[i]);
-    printf("\n");
+    // 각 원소 갯수 계산
+    for (i = 0; i < size; i++)
+        tmp_arr[arr[i]]++;
 
     // 누적합 계산
-    for (int i = 1; i < (max_val + 1); i++)
+    for (i = 1; i < (max_val + 1); i++)
         tmp_arr[i] += tmp_arr[i - 1];
-    printf("Cumulative Sum: ");
-    for (int i = 0; i < max_val + 1; i++)
-        printf("%d ", tmp_arr[i]);
-    printf("\n");
 
     // 누적합을 이용해 정렬
-    for (int i = 5; i >= 0; i--)
-        after_sort[--tmp_arr[before_sort[i]]] = before_sort[i];
+    for (i = size - 1; i >= 0; i--)
+        sorted_arr[--tmp_arr[arr[i]]] = arr[i];
+
+    // 원래 배열 갱신
+    for (i = 0; i < size; i++)
+        arr[i] = sorted_arr[i];
+    
+    free(tmp_arr);
+    free(sorted_arr);
+}
+
+int main()
+{
+    int arr[6] = { 1, 0, 3, 1, 3, 1 };
 
     // 결과
     printf("Before Counting Sort : ");
     for (int i = 0; i < 6; i++)
-        printf("%d ", before_sort[i]);
+        printf("%d ", arr[i]);
     printf("\n");
+
+    counting_sort(arr, 6);
 
     printf("After Counting Sort : ");
     for (int i = 0; i < 6; i++)
-        printf("%d ", after_sort[i]);
+        printf("%d ", arr[i]);
     printf("\n");
 
 	return 0;
